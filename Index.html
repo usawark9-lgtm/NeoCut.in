@@ -1,0 +1,815 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<title>NEOCUT | AI Video Studio</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial,sans-serif;
+}
+
+body{
+    background:#080711;
+    color:white;
+}
+
+header{
+    height:75px;
+    padding:0 6%;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    background:#100d1b;
+    border-bottom:1px solid #302044;
+}
+
+.logo{
+    font-size:27px;
+    font-weight:900;
+    letter-spacing:2px;
+    color:#bd80ff;
+}
+
+.logo span{color:white}
+
+.badge{
+    color:#c08aff;
+    font-size:12px;
+}
+
+.hero{
+    text-align:center;
+    padding:65px 15px 40px;
+}
+
+.hero h1{
+    font-size:clamp(35px,7vw,65px);
+    font-weight:900;
+}
+
+.hero h1 span{
+    color:#b77aff;
+    text-shadow:0 0 25px #9c42ff;
+}
+
+.hero p{
+    color:#a49bb0;
+    margin-top:15px;
+}
+
+.container{
+    max-width:1050px;
+    margin:auto;
+    padding:20px;
+}
+
+.card{
+    background:#151120;
+    border:1px solid #342447;
+    border-radius:16px;
+    padding:23px;
+    margin-bottom:20px;
+}
+
+.card h2{
+    font-size:18px;
+    margin-bottom:20px;
+}
+
+.upload{
+    display:block;
+    padding:35px 15px;
+    text-align:center;
+    border:2px dashed #8650bb;
+    border-radius:12px;
+    background:#20172e;
+    color:#d4adff;
+    cursor:pointer;
+}
+
+.upload p{
+    color:#999;
+    font-size:12px;
+    margin-top:10px;
+}
+
+input[type=file]{display:none}
+
+button,.download{
+    border:0;
+    padding:13px 18px;
+    background:linear-gradient(120deg,#a04cff,#6025b6);
+    color:white;
+    border-radius:9px;
+    cursor:pointer;
+    font-weight:bold;
+}
+
+button:hover,.download:hover{
+    box-shadow:0 0 20px #a04cff77;
+}
+
+.clip{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    background:#241a34;
+    border-radius:9px;
+    padding:12px;
+    margin-top:10px;
+    font-size:12px;
+}
+
+.clip span{
+    flex:1;
+    overflow:hidden;
+    text-overflow:ellipsis;
+}
+
+.clip button{
+    padding:8px 10px;
+}
+
+.grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:20px;
+}
+
+input[type=range]{
+    width:100%;
+    accent-color:#b77aff;
+    margin:15px 0;
+}
+
+select{
+    width:100%;
+    padding:13px;
+    border:1px solid #59406e;
+    border-radius:9px;
+    background:#241a34;
+    color:white;
+    margin-top:10px;
+}
+
+.effects{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:10px;
+}
+
+.effect{
+    padding:14px 5px;
+    text-align:center;
+    background:#251b36;
+    border:1px solid #443153;
+    border-radius:9px;
+    font-size:12px;
+    cursor:pointer;
+}
+
+.effect.active{
+    background:#643394;
+    border-color:#c18aff;
+}
+
+.preview{
+    background:#050408;
+    border:1px solid #443153;
+    border-radius:12px;
+    padding:10px;
+}
+
+video{
+    display:block;
+    width:100%;
+    max-height:400px;
+    background:black;
+    border-radius:8px;
+}
+
+.progress{
+    height:10px;
+    background:#30233f;
+    border-radius:20px;
+    overflow:hidden;
+    margin:15px 0;
+}
+
+#bar{
+    height:100%;
+    width:0%;
+    background:#b77aff;
+}
+
+#status{
+    color:#c69aff;
+    font-size:13px;
+    margin-top:12px;
+}
+
+.export{
+    width:100%;
+    padding:17px;
+    margin-top:15px;
+    font-size:16px;
+}
+
+.download{
+    display:block;
+    text-align:center;
+    text-decoration:none;
+    margin-top:15px;
+}
+
+small{
+    color:#999;
+    line-height:1.6;
+}
+
+footer{
+    text-align:center;
+    padding:30px;
+    color:#777;
+}
+
+@media(max-width:650px){
+    .grid{grid-template-columns:1fr}
+    .effects{grid-template-columns:repeat(2,1fr)}
+    .card{padding:17px}
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <div class="logo">NEO<span>CUT</span></div>
+    <div class="badge">● EDITOR STUDIO</div>
+</header>
+
+<section class="hero">
+    <h1>CREATE BEYOND <span>LIMITS.</span></h1>
+    <p>Your next-generation video editing studio.</p>
+</section>
+
+<main class="container">
+
+<section class="card">
+    <h2>01 / Upload Video Clips</h2>
+
+    <label class="upload">
+        <h3>＋ SELECT YOUR VIDEOS</h3>
+        <p>Upload multiple clips to start editing.</p>
+        <input type="file" id="videos" accept="video/*" multiple>
+    </label>
+
+    <div id="clipList"></div>
+</section>
+
+<div class="grid">
+
+<section class="card">
+    <h2>02 / Music Studio</h2>
+
+    <label class="upload">
+        ＋ UPLOAD MUSIC
+        <input type="file" id="music" accept="audio/*">
+    </label>
+
+    <p id="musicName" style="margin-top:12px;color:#aaa">
+        No music selected
+    </p>
+
+    <audio id="audioPreview" controls
+    style="width:100%;margin-top:15px;display:none"></audio>
+
+</section>
+
+<section class="card">
+    <h2>03 / Bass Control</h2>
+
+    <label>Bass Intensity</label>
+
+    <input type="range" id="bass" min="0" max="100" value="50">
+
+    <p>Bass: <span id="bassValue">50</span>%</p>
+
+    <br>
+
+    <label>
+        <input type="checkbox" id="bassBoost">
+        Bass Boost
+    </label>
+
+    <br><br>
+
+    <label>
+        <input type="checkbox" id="beatSync" checked>
+        Beat Synchronization
+    </label>
+</section>
+
+</div>
+
+<section class="card">
+    <h2>04 / Professional Effects</h2>
+
+    <div class="effects" id="effectList">
+        <div class="effect">Velocity</div>
+        <div class="effect">Motion Blur</div>
+        <div class="effect">Camera Shake</div>
+        <div class="effect">RGB Split</div>
+        <div class="effect">Glitch</div>
+        <div class="effect">Glow</div>
+        <div class="effect">Zoom</div>
+        <div class="effect">Flash</div>
+        <div class="effect">3D Movement</div>
+    </div>
+
+    <small>Effects selection is available; actual effect rendering is a later engine step.</small>
+</section>
+
+<section class="card">
+    <h2>05 / Automatic SFX</h2>
+
+    <div class="effects" id="sfxList">
+        <div class="effect">Whoosh</div>
+        <div class="effect">Bass Impact</div>
+        <div class="effect">Glitch SFX</div>
+        <div class="effect">Riser</div>
+        <div class="effect">Camera Impact</div>
+        <div class="effect">Transition SFX</div>
+    </div>
+
+    <small>Selecting these effects currently saves your choices; automatic SFX placement will be implemented next.</small>
+</section>
+
+<section class="card">
+    <h2>06 / Video Preview</h2>
+
+    <div class="preview">
+        <video id="preview" controls playsinline></video>
+    </div>
+</section>
+
+<section class="card">
+    <h2>07 / Rendering Settings</h2>
+
+    <label>Video Speed</label>
+    <select id="speed">
+        <option value="0.5">0.5x Slow</option>
+        <option value="1" selected>1x Normal</option>
+        <option value="1.5">1.5x Fast</option>
+        <option value="2">2x Fast</option>
+    </select>
+
+    <br><br>
+
+    <label>Export Quality</label>
+    <select id="quality">
+        <option value="720">720p</option>
+        <option value="1080" selected>1080p</option>
+    </select>
+
+    <br><br>
+
+    <label>Aspect Ratio</label>
+    <select id="ratio">
+        <option value="16:9">16:9</option>
+        <option value="9:16">9:16</option>
+        <option value="1:1">1:1</option>
+    </select>
+</section>
+
+<section class="card">
+    <h2>08 / NEOCUT Rendering Engine</h2>
+
+    <p id="engineStatus">FFmpeg engine not loaded.</p>
+
+    <button id="loadEngine">LOAD FFMPEG ENGINE</button>
+
+    <div class="progress">
+        <div id="bar"></div>
+    </div>
+
+    <p id="progressText">0%</p>
+
+    <button class="export" id="render">
+        ✦ GENERATE VIDEO
+    </button>
+
+    <p id="status">Waiting for video...</p>
+
+    <a id="download" class="download" hidden>
+        DOWNLOAD FINAL VIDEO
+    </a>
+
+    <br>
+
+    <small>
+        Video processing happens in your browser. Large videos
+        may require more memory and processing power.
+    </small>
+</section>
+
+</main>
+
+<footer>
+    NEOCUT © 2026 | CREATE BEYOND LIMITS
+</footer>
+
+<script type="module">
+
+import { FFmpeg } from
+"https://unpkg.com/@ffmpeg/ffmpeg@0.12.10/dist/esm/index.js";
+
+import {
+    fetchFile,
+    toBlobURL
+} from
+"https://unpkg.com/@ffmpeg/util@0.12.1/dist/esm/index.js";
+
+
+const ffmpeg = new FFmpeg();
+
+let clips = [];
+let musicFile = null;
+let engineLoaded = false;
+let downloadURL = null;
+
+
+const $ = id => document.getElementById(id);
+
+
+$("videos").addEventListener("change", function(){
+
+    clips.forEach(c => URL.revokeObjectURL(c.url));
+
+    clips = Array.from(this.files)
+        .filter(f => f.type.startsWith("video/"))
+        .map(file => ({
+            file,
+            url: URL.createObjectURL(file)
+        }));
+
+    renderClips();
+
+});
+
+
+function renderClips(){
+
+    $("clipList").innerHTML = "";
+
+    clips.forEach((clip,index)=>{
+
+        const row = document.createElement("div");
+        row.className = "clip";
+
+        const name = document.createElement("span");
+        name.textContent = (index+1)+". "+clip.file.name;
+
+        const play = document.createElement("button");
+        play.textContent = "PREVIEW";
+
+        play.onclick = ()=>{
+
+            $("preview").src = clip.url;
+            $("preview").play();
+
+        };
+
+        const remove = document.createElement("button");
+        remove.textContent = "✕";
+
+        remove.onclick = ()=>{
+
+            URL.revokeObjectURL(clip.url);
+
+            clips.splice(index,1);
+
+            renderClips();
+
+        };
+
+        row.append(name,play,remove);
+
+        $("clipList").appendChild(row);
+
+    });
+
+}
+
+
+$("music").addEventListener("change",function(){
+
+    musicFile = this.files[0] || null;
+
+    $("musicName").textContent =
+        musicFile ? musicFile.name : "No music selected";
+
+    if(musicFile){
+
+        $("audioPreview").src =
+            URL.createObjectURL(musicFile);
+
+        $("audioPreview").style.display="block";
+
+    }
+
+});
+
+
+$("bass").addEventListener("input",function(){
+
+    $("bassValue").textContent=this.value;
+
+});
+
+
+document.querySelectorAll(".effect").forEach(effect=>{
+
+    effect.addEventListener("click",()=>{
+
+        effect.classList.toggle("active");
+
+    });
+
+});
+
+
+ffmpeg.on("log",({message})=>{
+
+    console.log("[FFmpeg]",message);
+
+});
+
+
+ffmpeg.on("progress",({progress})=>{
+
+    const percent=Math.min(100,
+        Math.max(0,Math.round(progress*100)));
+
+    $("bar").style.width=percent+"%";
+    $("progressText").textContent=percent+"%";
+
+});
+
+
+$("loadEngine").addEventListener("click",async()=>{
+
+    if(engineLoaded)return;
+
+    $("loadEngine").disabled=true;
+    $("engineStatus").textContent="Loading FFmpeg...";
+
+    try{
+
+        const base =
+        "https://unpkg.com/@ffmpeg/core@0.12.6/dist/umd";
+
+        await ffmpeg.load({
+
+            coreURL:await toBlobURL(
+                base+"/ffmpeg-core.js",
+                "text/javascript"
+            ),
+
+            wasmURL:await toBlobURL(
+                base+"/ffmpeg-core.wasm",
+                "application/wasm"
+            )
+
+        });
+
+        engineLoaded=true;
+
+        $("engineStatus").textContent=
+            "● FFmpeg engine ready!";
+
+        $("loadEngine").textContent="ENGINE READY";
+
+    }catch(error){
+
+        console.error(error);
+
+        $("engineStatus").textContent=
+            "Loading failed. Check connection and reload.";
+
+        $("loadEngine").disabled=false;
+
+    }
+
+});
+
+
+$("render").addEventListener("click",async()=>{
+
+    if(!engineLoaded){
+
+        alert("First load FFmpeg engine.");
+        return;
+
+    }
+
+    if(clips.length===0){
+
+        alert("Upload video clips first.");
+        return;
+
+    }
+
+    $("render").disabled=true;
+
+    try{
+
+        $("status").textContent="Preparing clips...";
+
+        const list=[];
+
+        const speed=Number($("speed").value);
+
+        const height=Number($("quality").value);
+
+        const ratio=$("ratio").value;
+
+        let width;
+
+        if(ratio==="9:16"){
+
+            width=Math.round(height*9/16);
+
+        }else if(ratio==="1:1"){
+
+            width=height;
+
+        }else{
+
+            width=Math.round(height*16/9);
+
+        }
+
+        width=Math.floor(width/2)*2;
+
+        for(let i=0;i<clips.length;i++){
+
+            const input="input"+i+".mp4";
+            const output="clip"+i+".mp4";
+
+            await ffmpeg.writeFile(
+                input,
+                await fetchFile(clips[i].file)
+            );
+
+            $("status").textContent=
+                "Processing clip "+(i+1)+" of "+clips.length;
+
+            await ffmpeg.exec([
+
+                "-i",input,
+
+                "-vf",
+                `setpts=PTS/${speed},scale=${width}:${height}:force_original_aspect_ratio=decrease,pad=${width}:${height}:(ow-iw)/2:(oh-ih)/2,setsar=1`,
+
+                "-an",
+
+                "-c:v","libx264",
+
+                "-preset","ultrafast",
+
+                "-pix_fmt","yuv420p",
+
+                "-r","30",
+
+                output
+
+            ]);
+
+            list.push(output);
+
+        }
+
+        const concat =
+            list.map(file=>"file '"+file+"'").join("\n");
+
+        await ffmpeg.writeFile(
+            "list.txt",
+            new TextEncoder().encode(concat)
+        );
+
+        $("status").textContent="Joining clips...";
+
+        await ffmpeg.exec([
+
+            "-f","concat",
+            "-safe","0",
+            "-i","list.txt",
+            "-c","copy",
+            "joined.mp4"
+
+        ]);
+
+        let finalFile="joined.mp4";
+
+        if(musicFile){
+
+            $("status").textContent="Adding music...";
+
+            await ffmpeg.writeFile(
+                "music",
+                await fetchFile(musicFile)
+            );
+
+            const bassBoost=$("bassBoost").checked;
+
+            const bassLevel=Number($("bass").value);
+
+            const bassFilter=bassBoost
+                ? `bass=g=${Math.round(bassLevel/10)}`
+                : "anull";
+
+            await ffmpeg.exec([
+
+                "-i","joined.mp4",
+                "-i","music",
+
+                "-map","0:v:0",
+                "-map","1:a:0",
+
+                "-c:v","copy",
+
+                "-af",bassFilter,
+
+                "-c:a","aac",
+
+                "-b:a","192k",
+
+                "-shortest",
+
+                "final.mp4"
+
+            ]);
+
+            finalFile="final.mp4";
+
+        }
+
+        $("status").textContent="Preparing download...";
+
+        const data=await ffmpeg.readFile(finalFile);
+
+        const blob=new Blob(
+            [data],
+            {type:"video/mp4"}
+        );
+
+        if(downloadURL){
+
+            URL.revokeObjectURL(downloadURL);
+
+        }
+
+        downloadURL=URL.createObjectURL(blob);
+
+        $("download").href=downloadURL;
+        $("download").download="NEOCUT-FINAL.mp4";
+        $("download").hidden=false;
+
+        $("download").textContent="⬇ DOWNLOAD FINAL VIDEO";
+
+        $("status").textContent=
+            "✓ Video rendering completed!";
+
+        $("bar").style.width="100%";
+        $("progressText").textContent="100%";
+
+    }catch(error){
+
+        console.error(error);
+
+        $("status").textContent="Rendering failed.";
+
+        alert(
+            "Rendering failed. Try smaller video clips. "+
+            "Check browser memory and FFmpeg support."
+        );
+
+    }finally{
+
+        $("render").disabled=false;
+
+    }
+
+});
+
+</script>
+
+</body>
+</html>
